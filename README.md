@@ -1,15 +1,16 @@
 # OpenVPN
 
-OpenWrt OpenVPN 客户端的源码、离线安装包和配置指南，适配 Cudy TR3000。
+OpenWrt OpenVPN 客户端的源码、离线安装包和配置指南，适配 Cudy TR3000 与 Tenda BE12 Pro。
 
-本仓库的目的是让 OpenVPN 能在这台设备上**离线、可复现**地装好 —— 包括处理
-定制固件缺失 `kmod-ovpn-backports` 内核模块这个必踩的坑（见「已知问题」）。
+本仓库的目的是让 OpenVPN 能在这些设备上**可复现**地装好 —— 包括处理
+`kmod-ovpn-backports`（DCO）内核模块缺失这个必踩的坑，以及新版官方包不含 init 脚本的问题。
 
 ## 支持设备
 
 | 型号 | 架构 | 系统 | 包管理器 | 状态 |
 |------|------|------|----------|------|
-| Cudy TR3000 256MB v1 | aarch64_cortex-a53 | OpenWrt 25.12.4 | apk | 已安装 OpenVPN 2.7.6 + LuCI 26.262，实测可用 |
+| Cudy TR3000 256MB v1 | aarch64_cortex-a53 | OpenWrt 25.12.4 | apk | OpenVPN 2.7.6 + LuCI 26.262，实测可用 |
+| Tenda BE12 Pro | aarch64_cortex-a53 | OpenWrt SNAPSHOT r34613（内核 6.18.31） | apk | 官方 openvpn-openssl 2.7.7 + LuCI 26.262，实测可用 |
 
 ## 目录结构
 
@@ -17,16 +18,15 @@ OpenWrt OpenVPN 客户端的源码、离线安装包和配置指南，适配 Cud
 openvpn/
 ├── README.md                          # 本文件
 ├── .gitignore
-└── rudy-TR3000/                       # Cudy TR3000 (aarch64)
-    ├── README.md                      # 设备安装说明（含 DCO 依赖绕过）
-    ├── scripts/
-    │   └── install-openvpn.sh         # 一键安装脚本
-    ├── src/                           # 落地到设备根文件系统的文件
-    │   ├── etc/init.d/openvpn         # 服务 init 脚本
-    │   └── usr/
-    │       ├── sbin/openvpn           # 主程序二进制
-    │       └── lib/lua/luci/          # LuCI 控制器 / 模型 / 视图
-    └── packages/                      # .apk 安装包（8 个，可离线安装）
+├── .gitattributes                     # 强制 LF
+├── rudy-TR3000/                       # Cudy TR3000 (aarch64)
+│   ├── README.md
+│   ├── scripts/install-openvpn.sh
+│   ├── src/                           # init / LuCI（跨内核通用，BE12_Pro 复用）
+│   └── packages/                      # 8 个 apk
+└── BE12_Pro/                          # Tenda BE12 Pro (aarch64, SNAPSHOT)
+    ├── README.md                      # 含官方 2.7.7 无 init 的处理
+    └── scripts/install-openvpn.sh     # 复用 rudy-TR3000 的 src/packages
 ```
 
 ## 文件用途
