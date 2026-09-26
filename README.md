@@ -1,6 +1,6 @@
 # OpenVPN
 
-OpenWrt OpenVPN 客户端的源码、离线安装包和配置指南，适配 Cudy TR3000 与 Tenda BE12 Pro。
+OpenWrt OpenVPN 客户端的源码、离线安装包和配置指南，适配 Cudy TR3000、Tenda BE12 Pro 与 CMCC RAX3000M。
 
 本仓库的目的是让 OpenVPN 能在这些设备上**可复现**地装好 —— 包括处理
 `kmod-ovpn-backports`（DCO）内核模块缺失这个必踩的坑，以及新版官方包不含 init 脚本的问题。
@@ -11,6 +11,7 @@ OpenWrt OpenVPN 客户端的源码、离线安装包和配置指南，适配 Cud
 |------|------|------|----------|------|
 | Cudy TR3000 256MB v1 | aarch64_cortex-a53 | OpenWrt 25.12.4 | apk | OpenVPN 2.7.6 + LuCI 26.262，实测可用 |
 | Tenda BE12 Pro | aarch64_cortex-a53 | OpenWrt SNAPSHOT r34613（内核 6.18.31） | apk | 官方 openvpn-openssl 2.7.7 + LuCI 26.262，实测可用 |
+| CMCC RAX3000M | aarch64_cortex-a53 | OpenWrt 25.12.4（FanchmWrt，内核 6.12.87） | apk | OpenVPN 2.7.6（自带 init）+ LuCI，**纯离线**实测可用 |
 
 ## 目录结构
 
@@ -25,8 +26,12 @@ openvpn/
 │   ├── src/                           # init / LuCI（跨内核通用，BE12_Pro 复用）
 │   └── packages/                      # 8 个 apk
 └── BE12_Pro/                          # Tenda BE12 Pro (aarch64, SNAPSHOT)
-    ├── README.md                      # 含官方 2.7.7 无 init 的处理
-    └── scripts/install-openvpn.sh     # 复用 rudy-TR3000 的 src/packages
+│   ├── README.md                      # 含官方 2.7.7 无 init 的处理
+│   └── scripts/install-openvpn.sh     # 复用 rudy-TR3000 的 src/packages
+└── CMCC_RAX3000M/                     # 中国移动 RAX3000M (aarch64, 纯离线)
+    ├── README.md                      # 无网/无源的完整离线流程
+    ├── packages/                      # 39 个离线 apk + SHA256SUMS.txt
+    └── scripts/install-openvpn.sh     # 2.7.6 自带 init，空虚拟包绕 DCO
 ```
 
 ## 文件用途
@@ -63,6 +68,12 @@ sh scripts/install-openvpn.sh
 ```
 
 详细步骤与手动安装方式见 [rudy-TR3000/README.md](rudy-TR3000/README.md)。
+
+**无网设备（RAX3000M）** 见 [CMCC_RAX3000M/README.md](CMCC_RAX3000M/README.md)：
+
+```sh
+cd /tmp/CMCC_RAX3000M && sh scripts/install-openvpn.sh
+```
 
 ## 已知问题
 
